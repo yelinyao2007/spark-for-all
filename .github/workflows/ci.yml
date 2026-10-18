@@ -1,0 +1,23 @@
+name: Spark checks
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install -r requirements.lock && pip install --no-deps -e .
+      - run: pytest -q
+      - run: npm ci && npm run build && npm test
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: APP_MODE=demo DATABASE_PATH=/tmp/spark-ci.sqlite3 uvicorn spark.main:app --host 127.0.0.1 --port 8000 > /tmp/spark-server.log 2>&1 &
+      - run: python scripts/wait_server.py
+      - run: npm run test:e2e
+        working-directory: frontend

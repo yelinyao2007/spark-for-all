@@ -1,0 +1,1 @@
+<template><figure class="fraction-visual"><div><div class="pizza half"></div><b>1 / 2</b></div><span>＝</span><div><div class="pizza quarters"></div><b>2 / 4</b></div><figcaption>同样大的披萨，切法不同，拿到的总量相同。</figcaption></figure></template>
